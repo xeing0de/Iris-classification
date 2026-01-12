@@ -7,6 +7,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.linear_model import LogisticRegression
 
+from visual import save_decision_zones
+
 
 def main():
     iris = pd.read_csv("Iris.csv")
@@ -47,11 +49,21 @@ def main():
         print("Confusion matrix:")
         print(confusion_matrix(i.y_test, y_pred), end = "\n\n")
 
+    for m in models:
+        out_name = m.features.replace(" ", "").replace("+", "_") + ".png"
+        save_decision_zones(
+            model=m.model,
+            df=iris,
+            features=m.features_list,
+            target_col=target,
+            out_path=out_name,
+        )
 
 
 class Model():
     def __init__(self, dataset, features, target):
         self.features = " + ".join(features)
+        self.features_list = features
         self.X = dataset[features]
         self.Y = dataset[target]
 
